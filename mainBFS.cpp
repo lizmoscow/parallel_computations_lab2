@@ -4,10 +4,12 @@
 #include <chrono>
 #include <random>
 #include "vertex.h"
-#include "sequentialBFS.h"
+#include "bfs.h"
 
 
 std::vector<Vertex> buildGraph(std::string &filename, uint32_t n);
+void refresh(std::vector<Vertex> &graph);
+bool checkRefresh(std::vector<Vertex> &graph);
 
 
 int main(int argc, char** argv) {
@@ -22,23 +24,35 @@ int main(int argc, char** argv) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, std::pow(n, 3));
+        std::vector<uint32_t> startPositions(repeat, dis(gen));
 
         auto graph = buildGraph(filename, n);
 
-        auto startTime = std::chrono::system_clock::now();
-        for (uint32_t i = 0; i < repeat; ++ i) {
-            bfs(graph, dis(gen));
+        // Sequential version
+        long long int duration2 = 0;
+        for (auto pos : startPositions) {
+            auto startTime = std::chrono::steady_clock::now();
+            bfs(graph, pos);
+            auto finishTime = std::chrono::steady_clock::now();
+            duration2 += std::chrono::duration_cast<std::chrono::seconds>(finishTime - startTime).count();
+            if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
+            refresh(graph);
+            //if (!checkRefresh(graph)) std::cout << "Some vertices have not been refreshed!";
         }
-        auto finishTime = std::chrono::system_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count();
-        std::cout << "BFS took " << duration / repeat << " milliseconds\n";
+        std::cout << "Sequential BFS took " << duration2 / repeat << " seconds\n";
 
-        if (!checkBFS(graph)) {
-            std::cout << "Some vertices have not been visited!";
+        // Parallel version
+        long long int duration1 = 0;
+        for (auto pos : startPositions) {
+            auto startTime = std::chrono::steady_clock::now();
+            parallelBFS(graph, pos);
+            auto finishTime = std::chrono::steady_clock::now();
+            duration1 += std::chrono::duration_cast<std::chrono::seconds>(finishTime - startTime).count();
+            if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
+            refresh(graph);
+            //if (!checkRefresh(graph)) std::cout << "Some vertices have not been refreshed!";
         }
-        else {
-            std::cout << "Algorithm works correctly!";
-        }
+        std::cout << "Parallel BFS took " << duration1 / repeat << " seconds\n";
     }
     catch (std::exception &e) {
         std::cerr << e.what();
@@ -75,3 +89,18 @@ std::vector<Vertex> buildGraph(std::string &filename, uint32_t n) {
 }
 
 
+void refresh(std::vector<Vertex> &graph) {
+    for (auto &v :graph) {
+        v.visited = false;
+    }
+}
+
+
+
+bool checkRefresh(std::vector<Vertex> &graph) {
+    bool correct = true;
+    for (const auto &vertex : graph) {
+        correct &= !vertex.visited;
+    }
+    return correct;
+}
