@@ -129,7 +129,7 @@ bool checkBFS(std::vector<Vertex> &graph) {
 }
 
 
-void parallelBFS_s(std::vector<Vertex> &graph, uint32_t start,
+/*void parallelBFS_s(std::vector<Vertex> &graph, uint32_t start,
                    Vertex** queue1, Vertex** queue2, std::tuple<uint32_t, Vertex*>* temp) {
     queue1[0] = &graph[start];
     queue1[0]->visited = true;
@@ -146,7 +146,6 @@ void parallelBFS_s(std::vector<Vertex> &graph, uint32_t start,
 
         if (sizeTemp == 0) return;
 #pragma omp parallel for
-        {
             for (uint32_t i = 0; i < sizeTemp; ++i) {
                 auto item = std::get<1>(temp[i]);
                 if (item == nullptr) return;
@@ -159,7 +158,6 @@ void parallelBFS_s(std::vector<Vertex> &graph, uint32_t start,
                     }
                 }
             }
-        }
         std::swap(queue1, queue2);
         for (uint32_t i = 0; i < sizeQueue1; ++i) {
             queue2[i] = nullptr;
@@ -167,7 +165,7 @@ void parallelBFS_s(std::vector<Vertex> &graph, uint32_t start,
         sizeQueue1 = neighbourCount;
         //std::cout << "Queue updated\n";
     }
-}
+}*/
 
 
 void parallelBFS_new(std::vector<Vertex> &graph, uint32_t start) {

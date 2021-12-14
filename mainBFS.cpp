@@ -30,10 +30,10 @@ int main(int argc, char** argv) {
         auto graph = buildGraph(filename, n);
 
         // Sequential version
-        /*long long int duration2 = 0;
+        long long int duration2 = 0;
         for (auto pos : startPositions) {
             auto startTime = std::chrono::steady_clock::now();
-            parallelBFS_new(graph, pos);
+            bfs(graph, pos);
             auto finishTime = std::chrono::steady_clock::now();
             duration2 += std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count();
             if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
                       << " milliseconds!\n";
             refresh(graph);
         }
-        std::cout << "\nLiza's BFS took " << duration2 / repeat << " milliseconds\n";*/
+        std::cout << "\nSequential BFS took " << duration2 / repeat << " milliseconds\n\n";
 
         // Parallel version
         long long int duration1 = 0;
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         delete[] temp2;
         delete[] queue1;
         delete[] queue2;
-        std::cout << "\nIlya's BFS took " << duration1 / repeat << " milliseconds\n";
+        std::cout << "\nParallel BFS took " << duration1 / repeat << " milliseconds\n";
     }
     catch (std::exception &e) {
         std::cerr << e.what();
