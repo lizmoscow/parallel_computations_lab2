@@ -10,7 +10,6 @@
 
 std::vector<Vertex> buildGraph(std::string &filename, uint32_t n);
 void refresh(std::vector<Vertex> &graph);
-bool checkRefresh(std::vector<Vertex> &graph);
 
 
 int main(int argc, char** argv) {
@@ -52,7 +51,7 @@ int main(int argc, char** argv) {
         auto queue2 = new Vertex*[graph.size() * 6];
         for (auto pos : startPositions) {
             auto startTime = std::chrono::steady_clock::now();
-            parallelBFS_omp_wcopy(graph, 0, temp1, temp2, queue1, queue2);
+            parallelBFS(graph, pos, temp1, temp2, queue1, queue2);
             auto finishTime = std::chrono::steady_clock::now();
             duration1 += std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count();
             if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
@@ -88,13 +87,12 @@ std::vector<Vertex> buildGraph(std::string &filename, uint32_t n) {
 
     uint32_t index, numberOfNeighbours;
     while (in >> index >> numberOfNeighbours) {
-        std::vector<uint32_t> neighbours;
-        neighbours.reserve(6);
         uint32_t nghbr;
         for (uint32_t i = 0; i < numberOfNeighbours; ++i) {
             in >> nghbr;
             graph[index].neighbours.push_back(&graph[nghbr]);
         }
+        graph[index].neighbours.shrink_to_fit();
     }
 
     in.close();
