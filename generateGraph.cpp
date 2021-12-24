@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
 
 void generateGraph(std::string &filename, int32_t n) {
-    std::ofstream out(filename, std::ios::app);
+    std::ofstream out(filename);
     if (!out.is_open()) {
         throw std::runtime_error("Cannot open the file!");
     }

@@ -8,7 +8,8 @@
 void bfs(std::vector<Vertex> &graph, uint32_t start) {
     std::deque<Vertex*> queue;
     queue.push_back(&graph[start]);
-    graph[0].visited = true;
+    graph[start].visited = true;
+    graph[start].distance = 0;
 
     while (!queue.empty()) {
         auto vertex = queue.front();
@@ -17,6 +18,7 @@ void bfs(std::vector<Vertex> &graph, uint32_t start) {
             if (!neighbour->visited) {
                 queue.push_back(neighbour);
                 neighbour->visited = true;
+                neighbour->distance = vertex->distance + 1;
             }
         }
     }
@@ -44,6 +46,7 @@ void parallelBFS_stl(std::vector<Vertex> &graph, uint32_t start) {
 
     queue1.push_back(&graph[start]);
     graph[0].visited = true;
+    graph[0].distance = 0;
 
     auto iteration = [&queue1, &queue2, &temp](uint32_t position)
     {
@@ -55,6 +58,7 @@ void parallelBFS_stl(std::vector<Vertex> &graph, uint32_t start) {
             if (!neighbour->visited) {
                 queue2[pos++] = neighbour;
                 neighbour->visited = true;
+                neighbour->distance = item->distance + 1;
             }
         }
     };
@@ -129,6 +133,7 @@ void parallelBFS(std::vector<Vertex> &graph, uint32_t start,
 
     queue1[0] = &graph[start];
     queue1[0]->visited = true;
+    queue1[0]->distance = 0;
 
     auto pred1 = [](Vertex* v){
         return v->neighbours.size();
@@ -154,6 +159,7 @@ void parallelBFS(std::vector<Vertex> &graph, uint32_t start,
                         neighbour->visited = true;
                     }
                     queue2[pos++] = (!visited) ? neighbour : nullptr;
+                    neighbour->distance = (!visited) ? item->distance + 1 : neighbour->distance;
                 }
             }
         sizeQueue1 = filter(queue2, queue1,
