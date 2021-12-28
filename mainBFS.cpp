@@ -33,10 +33,11 @@ int main(int argc, char** argv) {
         long long int duration2 = 0;
         for (uint32_t i = 0; i < repeat; ++i) {
             auto startTime = std::chrono::steady_clock::now();
-            bfs(graph, startPositions[i]);
+            bfs(graph, 0);
             auto finishTime = std::chrono::steady_clock::now();
             duration2 += std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count();
             if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
+            if (!checkBFSDistance(graph, n)) std::cout << "wrong distance!";
             std::cout << "Iteration done in "
                       << std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count()
                       << " milliseconds!\n";
@@ -52,10 +53,11 @@ int main(int argc, char** argv) {
         auto queue2 = new Vertex*[graph.size() * 6];
         for (uint32_t i = 0; i < repeat; ++i) {
             auto startTime = std::chrono::steady_clock::now();
-            parallelBFS(graph, startPositions[i], temp1, temp2, queue1, queue2);
+            parallelBFS(graph, 0, temp1, temp2, queue1, queue2);
             auto finishTime = std::chrono::steady_clock::now();
             duration1 += std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count();
             if (!checkBFS(graph)) std::cout << "Some vertices have not been visited!";
+            if (!checkBFSDistance(graph, n)) std::cout << "wrong distance!";
             std::cout << "Iteration done in "
                     << std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime).count()
                     << " milliseconds!\n";

@@ -2,6 +2,7 @@
 #include <queue>
 #include <numeric>
 #include <execution>
+#include <iostream>
 #include "vertex.h"
 
 
@@ -29,6 +30,19 @@ bool checkBFS(std::vector<Vertex> &graph) {
     bool correct = true;
     for (const auto &vertex : graph) {
         correct &= vertex.visited;
+    }
+    return correct;
+}
+
+
+bool checkBFSDistance(std::vector<Vertex> &graph, uint32_t n) {
+    bool correct = true;
+    for (const auto &vertex : graph) {
+        uint32_t k = vertex.index % n;
+        uint32_t j = ((vertex.index - k) % (n * n)) / n;
+        uint32_t i = (vertex.index - k - j * n) / (n * n);
+        if (vertex.distance != i + j + k) std::cout << vertex.distance << " " << i + j + k << "\n";
+        correct &= (vertex.distance == i + j + k);
     }
     return correct;
 }

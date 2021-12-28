@@ -8,5 +8,6 @@
 void bfs(std::vector<Vertex> &graph, uint32_t start = 0);
 void parallelBFS(std::vector<Vertex> &graph, uint32_t start, uint32_t* temp1, uint32_t* temp2, Vertex** queue1, Vertex** queue2);
 bool checkBFS(std::vector<Vertex> &graph);
+bool checkBFSDistance(std::vector<Vertex> &graph, uint32_t n);
 
 #endif //PARALLELCOMPUTATIONSPT2_BFS_H
